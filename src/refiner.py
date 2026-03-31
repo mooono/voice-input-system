@@ -12,12 +12,6 @@ logger = logging.getLogger(__name__)
 
 _CLIENT_CACHE: dict[tuple[str, str, str], AzureOpenAI | OpenAI] = {}
 
-SYSTEM_PROMPT = (
-    "音声テキストを整形し出力。"
-    "「ええと」「あの」「えー」「まあ」「なんか」「うーん」等のフィラーを必ず削除。"
-    "誤字修正、句読点補正。意味を変えず整形後テキストのみ返す。"
-)
-
 
 def _is_foundry_endpoint(endpoint: str) -> bool:
     """Detect Azure AI Foundry project endpoints."""
@@ -109,8 +103,10 @@ def refine_text(text: str, cfg: AzureOpenAIConfig) -> str:
     mode = _endpoint_mode(cfg.endpoint)
     t0 = perf_counter()
 
+    system_prompt = cfg.system_prompt
+
     messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},
     ]
 
@@ -119,7 +115,7 @@ def refine_text(text: str, cfg: AzureOpenAIConfig) -> str:
             # Foundry responses API — use streaming
             stream = client.responses.create(
                 model=cfg.deployment,
-                instructions=SYSTEM_PROMPT,
+                instructions=system_prompt,
                 input=text,
                 temperature=cfg.temperature,
                 max_output_tokens=cfg.max_output_tokens,

@@ -18,6 +18,13 @@ class AzureSpeechConfig:
     language: str = field(default_factory=lambda: os.environ.get("SPEECH_LANGUAGE", "ja-JP"))
 
 
+DEFAULT_REFINE_SYSTEM_PROMPT = (
+    "音声テキストを整形し出力。"
+    "「ええと」「あの」「えー」「まあ」「なんか」「うーん」等のフィラーを必ず削除。"
+    "誤字修正、句読点補正。意味を変えず整形後テキストのみ返す。"
+)
+
+
 @dataclass
 class AzureOpenAIConfig:
     api_key: str = field(default_factory=lambda: os.environ.get("AZURE_OPENAI_KEY", ""))
@@ -28,6 +35,9 @@ class AzureOpenAIConfig:
     max_output_tokens: int = field(default_factory=lambda: int(os.environ.get("AZURE_OPENAI_MAX_OUTPUT_TOKENS", "96")))
     temperature: float = field(default_factory=lambda: float(os.environ.get("AZURE_OPENAI_TEMPERATURE", "0.0")))
     min_chars_for_api: int = field(default_factory=lambda: int(os.environ.get("REFINE_MIN_CHARS_FOR_API", "8")))
+    system_prompt: str = field(
+        default_factory=lambda: os.environ.get("REFINE_SYSTEM_PROMPT", DEFAULT_REFINE_SYSTEM_PROMPT)
+    )
 
 
 @dataclass
