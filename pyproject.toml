@@ -1,0 +1,18 @@
+[project]
+name = "voice-input-system"
+version = "0.1.0"
+description = "Voice input system using Azure Speech-to-Text"
+requires-python = ">=3.10"
+dependencies = [
+    "azure-cognitiveservices-speech>=1.40.0",
+    "openai>=1.30.0",
+    "python-dotenv>=1.0.0",
+    "pynput>=1.7.6",
+    "pyautogui>=0.9.54",
+    "pyperclip>=1.9.0",
+    "sounddevice>=0.4.6",
+    "numpy>=1.24.0",
+]
+
+[project.scripts]
+voice-input = "src.main:main"
